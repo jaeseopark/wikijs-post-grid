@@ -33,21 +33,27 @@ And the content of the said page:
   document.addEventListener('DOMContentLoaded', () => {
     WikiJSPostGrid.showGrid({
       maxPosts: 8, // default: 16
-      enrichPost: (post) => {
-        // Custom post enrichment
-        return post;
+      enrichPost: ({ tags }) => {
+        // Custom post enrichment - return additional properties
+        return {
+          isFeatured: tags.includes('featured'),
+        };
       },
       filterPost: (post) => {
-        // Custom filtering logic
-        return post.tags && post.tags.includes('featured');
+        // Custom filtering logic - can use enriched properties
+        return post.isFeatured;
       },
       sortPost: (a, b) => {
         // Custom sorting logic (default: newest first by time)
         return b.title.localeCompare(a.title); // Sort by title Z-A
       },
-      formatDate: (date) => {
+      renderDate: (date) => {
         // Custom date formatting
         return date.toLocaleDateString('en-GB');
+      },
+      renderTitle: ({ title, tags}) => {
+        const prefix = tags.includes("big project") ? "🔥" : "";
+        return `${prefix}${title}`
       }
     });
   });
@@ -60,18 +66,13 @@ And the content of the said page:
 
 Renders a grid of WikiJS posts in the element with id `wikijs-post-grid`.
 
-#### Options
+#### GridOptions
 
-- `maxPosts?: number` - Maximum number of posts to display (default: 16)
-- `enrichPost?: (page: WikiJSPage) => WikiJSPage` - Function to enrich/modify posts before rendering
-- `filterPost?: (page: WikiJSPage) => boolean` - Function to filter which posts to display (default: finished projects only)
-- `sortPost?: (a: EnrichedPage, b: EnrichedPage) => number` - Function to sort posts (default: newest first by time)
-- `formatDate?: (date: Date) => string` - Function to format dates (default: US format)
-
-## Types
-
-The library exports TypeScript types for better development experience:
-
-- `WikiJSPage` - Raw page data from WikiJS GraphQL API
-- `EnrichedPage` - Page data with additional computed properties
-- `GridOptions` - Configuration options for the grid
+| Key | Type | Description | Default |
+|-----------|------|-------------|---------|
+| maxPosts | number | Maximum number of posts to display | 16 |
+| renderDate | (date: Date) => string | Function to format dates | `date.toLocaleDateString()` |
+| renderTitle | (post: EnrichedPost<T>) => string | Function to customize the title rendering | `post => post.title` |
+| enrichPost | (post: WikiJsPost) => T | Function to enrich posts with additional properties before rendering | undefined (no enrichment) |
+| filterPost | (post: EnrichedPost<T>) => boolean | Function to filter which posts to display | undefined (no filtering) |
+| sortPost | (a: EnrichedPost<T>, b: EnrichedPost<T>) => number | Function to sort posts | unefined (no sorting) |

@@ -1,4 +1,4 @@
-export interface BaseWikiJSPage {
+export interface BaseWikiJsPost {
     id: string;
     path: string;
     title: string;
@@ -6,24 +6,31 @@ export interface BaseWikiJSPage {
     createdAt: string;
 }
 
-export interface GraphQLResponseWikiJSPage extends BaseWikiJSPage {
+export interface GraphQLResponseWikiJsPost extends BaseWikiJsPost {
     tags?: string[]; // tags may be undefined in the GraphQL response
 }
 
-export interface WikiJSPage extends BaseWikiJSPage {
+export interface WikiJsPost extends BaseWikiJsPost {
     tags: string[]; // ensure tags is always defined
+    imageUrl?: string; // optional imageUrl property; extracted from the description field.
 }
 
 export type EnrichedProperties<T extends Record<string, unknown>> = T;
 
-export type EnrichedPage<T extends Record<string, unknown>> = WikiJSPage & EnrichedProperties<T>;
+export type EnrichedPost<T extends Record<string, unknown>> = WikiJsPost & EnrichedProperties<T>;
+
+export interface RenderOptions<T extends Record<string, unknown>> {
+    renderDate?: (post: EnrichedPost<T>) => string; // will use the locale's default formatting if not provided
+    renderTitle?: (post: EnrichedPost<T>) => string; // custom title rendering
+    renderTags?: (tags: string[]) => string[]; // custom tag rendering
+}
 
 export interface GridOptions<T extends Record<string, unknown>> {
     maxPosts?: number;
-    enrichPost?: (page: WikiJSPage) => EnrichedProperties<T>; // should return additional properties to merge
-    filterPost?: (page: EnrichedPage<T>) => boolean;
-    sortPost?: (a: EnrichedPage<T>, b: EnrichedPage<T>) => number;
-    formatDate?: (date: Date) => string; // will use the locale's default formatting if not provided
+    enrichPost?: (post: WikiJsPost) => EnrichedProperties<T>; // should return additional properties to merge
+    filterPost?: (post: EnrichedPost<T>) => boolean;
+    sortPost?: (a: EnrichedPost<T>, b: EnrichedPost<T>) => number;
+    renderOptions?: RenderOptions<T>;
 }
 
 export interface GraphQLPayload {
@@ -36,7 +43,7 @@ export interface GraphQLPayload {
 export interface GraphQLResponse {
     data: {
         pages: {
-            list: GraphQLResponseWikiJSPage[];
+            list: GraphQLResponseWikiJsPost[];
         };
     };
 }

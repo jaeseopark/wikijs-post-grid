@@ -1,10 +1,13 @@
-import { EnrichedPage } from './types';
+import { EnrichedPost, RenderOptions } from './types';
 
-export function renderCard<T extends Record<string, unknown>>(page: EnrichedPage<T>, formatDate: (date: Date) => string): string {
-  const isBig = (page as any).isBigProject || false;
-  const imageUrl = (page as any).imageUrl;
-  const tags = (page as any).filteredTags || page.tags || [];
-  const time = (page as any).time || page.createdAt;
+export function renderCard<T extends Record<string, unknown>>({ post, options = {} }: { post: EnrichedPost<T>, options?: RenderOptions<T> }): string {
+  const {
+    renderDate = (post: EnrichedPost<T>) => new Date(post.createdAt).toLocaleDateString(),
+    renderTitle = (post: EnrichedPost<T>) => post.title,
+    renderTags = (tags: string[]) => tags,
+  } = options;
+
+  const { imageUrl, tags } = post;
 
   // Create card container
   const card = document.createElement("div");
@@ -16,12 +19,12 @@ export function renderCard<T extends Record<string, unknown>>(page: EnrichedPage
 
   if (imageUrl) {
     const figureLink = document.createElement("a");
-    figureLink.href = page.path;
+    figureLink.href = post.path;
     figureLink.style.cssText = "display: block; width: 100%; height: 100%; text-decoration: none;";
 
     const img = document.createElement("img");
     img.src = imageUrl;
-    img.alt = page.title;
+    img.alt = post.title;
     img.style.cssText = "width: 100%; height: 100%; object-fit: cover; cursor: pointer;";
     figureLink.appendChild(img);
     figure.appendChild(figureLink);
@@ -82,19 +85,19 @@ export function renderCard<T extends Record<string, unknown>>(page: EnrichedPage
 
   // Create title link
   const titleLink = document.createElement("a");
-  titleLink.href = page.path;
+  titleLink.href = post.path;
   titleLink.style.cssText = "text-decoration: none; color: inherit; cursor: pointer;";
 
   const title = document.createElement("h2");
   title.style.cssText = "margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #000;";
-  title.textContent = isBig ? "🔥 " + page.title : page.title;
+  title.textContent = renderTitle(post);
   titleLink.appendChild(title);
   cardBody.appendChild(titleLink);
 
   // Create tags container
   const tagsContainer = document.createElement("div");
   tagsContainer.style.cssText = "display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;";
-  tags.forEach((tag: string) => {
+  renderTags(tags).forEach((tag: string) => {
     const tagLink = document.createElement("a");
     tagLink.href = "/t/" + tag;
     tagLink.style.cssText = "display: inline-block; padding: 4px 8px; font-size: 12px; color: #666; border: 1px solid #d1d5db; border-radius: 4px; background: #f9fafb; text-decoration: none; cursor: pointer; transition: background 0.2s;";
@@ -112,22 +115,11 @@ export function renderCard<T extends Record<string, unknown>>(page: EnrichedPage
   // Create timestamp
   const timestamp = document.createElement("span");
   timestamp.style.cssText = "font-size: 12px; color: #999;";
-  timestamp.textContent = formatDate(new Date(time));
+  timestamp.textContent = renderDate(post);
   cardFooter.appendChild(timestamp);
 
   cardBody.appendChild(cardFooter);
   card.appendChild(cardBody);
 
   return card.outerHTML;
-}
-
-export function renderGrid<T extends Record<string, unknown>>(data: EnrichedPage<T>[], formatDate: (date: Date) => string): void {
-  const grid = document.getElementById('wikijs-post-grid');
-  if (!grid) {
-    console.error('Element with id "wikijs-post-grid" not found');
-    return;
-  }
-  
-  grid.style.cssText = "display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px;";
-  grid.innerHTML = data.map(page => renderCard(page, formatDate)).join('');
 }

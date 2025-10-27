@@ -1,65 +1,53 @@
-import { WikiJSPage, GridOptions, GraphQLPayload, GraphQLResponse, EnrichedPage } from './types';
-import { renderGrid } from './renderer';
+import { WikiJsPost, GridOptions } from './types';
+import { renderCard } from './renderer';
+import { fetchPosts } from './network';
 
 const DEFAULT_MAX_POSTS = 16;
 
-const GRAPHQL_PAYLOAD: GraphQLPayload = {
-    operationName: null,
-    variables: {},
-    extensions: {},
-    query: "{\n  pages {\n    list {\n      id\n      locale\n      path\n      title\n      description\n      createdAt\n      tags\n      }\n      }\n}",
-};
-
-async function fetchPosts(): Promise<WikiJSPage[]> {
-    const rawResponse = await fetch("/graphql", {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-        body: JSON.stringify(GRAPHQL_PAYLOAD),
-    });
-
-    const content: GraphQLResponse = await rawResponse.json();
-    return content.data.pages.list.map(page => ({
-        ...page,
-        tags: page.tags || []
-    }));
-}
-
-export async function showGrid<T extends Record<string, unknown> = Record<string, unknown>>(options: GridOptions<T> = {} as GridOptions<T>): Promise<void> {
+export async function showGrid<T extends Record<string, unknown>>(options: GridOptions<T> = {} as GridOptions<T>): Promise<void> {
     const {
         maxPosts = DEFAULT_MAX_POSTS,
-        enrichPost = (_post: WikiJSPage) => ({} as T),
-        filterPost = (_page: EnrichedPage<T>) => true,
+        enrichPost = (_post: WikiJsPost) => ({} as T),
+        filterPost,
         sortPost,
-        formatDate = (date: Date) => new Date(date).toLocaleDateString()
+        renderOptions,
     } = options;
 
+    const grid = document.getElementById('wikijs-post-grid');
+
+    if (!grid) {
+        console.info('Element with id "wikijs-post-grid" not found');
+        return;
+    }
+
+    let posts: WikiJsPost[] = [];
     try {
-        const posts = await fetchPosts();
-
-        let processedPosts = posts
-            .map(post => ({ ...post, ...enrichPost(post) }))
-            .filter(filterPost);
-
-        if (sortPost) {
-            processedPosts = processedPosts.sort(sortPost);
-        }
-
-        processedPosts = processedPosts.slice(0, maxPosts);
-
-        renderGrid(processedPosts, formatDate);
+        posts = await fetchPosts();
     } catch (error) {
         console.error('Error loading WikiJS posts:', error);
     }
+
+    let processedPosts = posts
+        .map(post => ({ ...post, ...enrichPost(post) }))
+
+    if (filterPost) {
+        processedPosts = processedPosts.filter(filterPost);
+    }
+
+    if (sortPost) {
+        processedPosts = processedPosts.sort(sortPost);
+    }
+
+    processedPosts = processedPosts.slice(0, maxPosts);
+
+    grid.style.cssText = "display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px;";
+    grid.innerHTML = processedPosts.map(page => renderCard({ page, options: renderOptions })).join('');
+
 }
 
-// Export additional utilities for advanced usage
-export { WikiJSPage, EnrichedPage, GridOptions } from './types';
-export { enrichPage, extractImageUrl } from './utils';
-export { showProjectGrid } from './projects';
+// Export additional types and project grid preset for advanced usage
+export { WikiJsPost, EnrichedPost, GridOptions } from './types';
+export { showProjectGrid } from './curated/projects';
 
 // Default export for UMD build
 export default { showGrid };
