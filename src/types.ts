@@ -26,6 +26,7 @@ export interface RenderOptions<T extends Record<string, unknown>> {
 }
 
 export interface GridOptions<T extends Record<string, unknown>> {
+    gridContainerId?: string; // default is 'wikijs-post-grid'
     maxPosts?: number;
     enrichPost?: (post: WikiJsPost) => EnrichedProperties<T>; // should return additional properties to merge
     filterPost?: (post: EnrichedPost<T>) => boolean;

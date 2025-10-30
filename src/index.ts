@@ -6,6 +6,7 @@ const DEFAULT_MAX_POSTS = 16;
 
 export async function showGrid<T extends Record<string, unknown>>(options: GridOptions<T> = {} as GridOptions<T>): Promise<void> {
     const {
+        gridContainerId = 'wikijs-post-grid',
         maxPosts = DEFAULT_MAX_POSTS,
         enrichPost = (_post: WikiJsPost) => ({} as T),
         filterPost,
@@ -13,10 +14,10 @@ export async function showGrid<T extends Record<string, unknown>>(options: GridO
         renderOptions,
     } = options;
 
-    const grid = document.getElementById('wikijs-post-grid');
+    const grid = document.getElementById(gridContainerId);
 
     if (!grid) {
-        console.info('Element with id "wikijs-post-grid" not found');
+        console.info(`Element with id "${gridContainerId}" not found`);
         return;
     }
 
