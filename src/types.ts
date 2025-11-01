@@ -15,20 +15,18 @@ export interface WikiJsPost extends BaseWikiJsPost {
     imageUrl?: string; // optional imageUrl property; extracted from the description field.
 }
 
-export type EnrichedProperties<T extends Record<string, unknown>> = T;
+export type EnrichedPost<T> = WikiJsPost & T;
 
-export type EnrichedPost<T extends Record<string, unknown>> = WikiJsPost & EnrichedProperties<T>;
-
-export interface RenderOptions<T extends Record<string, unknown>> {
+export interface RenderOptions<T> {
     renderDate?: (post: EnrichedPost<T>) => string; // will use the locale's default formatting if not provided
     renderTitle?: (post: EnrichedPost<T>) => string; // custom title rendering
     renderTags?: (tags: string[]) => string[]; // custom tag rendering
 }
 
-export interface GridOptions<T extends Record<string, unknown>> {
+export interface GridOptions<T> {
     gridContainerId?: string; // default is 'wikijs-post-grid'
     maxPosts?: number;
-    enrichPost?: (post: WikiJsPost) => EnrichedProperties<T>; // should return additional properties to merge
+    enrichPost?: (post: WikiJsPost) => T; // should return additional properties to merge
     filterPost?: (post: EnrichedPost<T>) => boolean;
     sortPost?: (a: EnrichedPost<T>, b: EnrichedPost<T>) => number;
     renderOptions?: RenderOptions<T>;

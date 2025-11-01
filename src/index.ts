@@ -4,7 +4,7 @@ import { fetchPosts } from './network';
 
 const DEFAULT_MAX_POSTS = 16;
 
-export async function showGrid<T extends Record<string, unknown>>(options: GridOptions<T>): Promise<void> {
+export async function showGrid<T>(options: GridOptions<T>): Promise<void> {
     const {
         gridContainerId = 'wikijs-post-grid',
         maxPosts = DEFAULT_MAX_POSTS,
@@ -45,8 +45,7 @@ export async function showGrid<T extends Record<string, unknown>>(options: GridO
     processedPosts = processedPosts.slice(0, maxPosts);
 
     grid.style.cssText = "display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px;";
-    grid.innerHTML = processedPosts.map(page => renderCard({ page, options: renderOptions })).join('');
-
+    grid.innerHTML = processedPosts.map(post => renderCard<T>({ post, options: renderOptions })).join('');
 }
 
 // Export additional types and project grid preset for advanced usage

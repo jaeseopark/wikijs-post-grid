@@ -1,6 +1,6 @@
 import { EnrichedPost, RenderOptions } from './types';
 
-export function renderCard<T extends Record<string, unknown>>({ post, options = {} }: { post: EnrichedPost<T>, options?: RenderOptions<T> }): string {
+export function renderCard<T>({ post, options = {} }: { post: EnrichedPost<T>, options?: RenderOptions<T> }): string {
   const {
     renderDate = (post: EnrichedPost<T>) => new Date(post.createdAt).toLocaleDateString(),
     renderTitle = (post: EnrichedPost<T>) => post.title,
