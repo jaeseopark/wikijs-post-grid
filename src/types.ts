@@ -32,6 +32,7 @@ export interface GridOptions<T extends Record<string, unknown>> {
     filterPost?: (post: EnrichedPost<T>) => boolean;
     sortPost?: (a: EnrichedPost<T>, b: EnrichedPost<T>) => number;
     renderOptions?: RenderOptions<T>;
+    fetchedPosts?: WikiJsPost[]; // freshly-fetched, unfiltered posts; avoids redundant GraphQL calls if multiple grids are in one page
 }
 
 export interface GraphQLPayload {

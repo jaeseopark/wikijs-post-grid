@@ -4,7 +4,7 @@ import { fetchPosts } from './network';
 
 const DEFAULT_MAX_POSTS = 16;
 
-export async function showGrid<T extends Record<string, unknown>>(options: GridOptions<T> = {} as GridOptions<T>): Promise<void> {
+export async function showGrid<T extends Record<string, unknown>>(options: GridOptions<T>): Promise<void> {
     const {
         gridContainerId = 'wikijs-post-grid',
         maxPosts = DEFAULT_MAX_POSTS,
@@ -12,6 +12,7 @@ export async function showGrid<T extends Record<string, unknown>>(options: GridO
         filterPost,
         sortPost,
         renderOptions,
+        fetchedPosts = []
     } = options;
 
     const grid = document.getElementById(gridContainerId);
@@ -21,13 +22,15 @@ export async function showGrid<T extends Record<string, unknown>>(options: GridO
         return;
     }
 
-    let posts: WikiJsPost[] = [];
-    try {
-        posts = await fetchPosts();
-    } catch (error) {
-        console.error('Error loading WikiJS posts:', error);
+    let posts: WikiJsPost[] = [...fetchedPosts];
+    if (posts.length === 0) {
+        try {
+            posts = await fetchPosts();
+        } catch (error) {
+            console.error('Error loading WikiJS posts:', error);
+        }
     }
-
+    
     let processedPosts = posts
         .map(post => ({ ...post, ...enrichPost(post) }))
 
