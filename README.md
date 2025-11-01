@@ -47,13 +47,15 @@ And the content of the said page:
         // Custom sorting logic (default: newest first by time)
         return b.title.localeCompare(a.title); // Sort by title Z-A
       },
-      renderDate: (date) => {
-        // Custom date formatting
-        return date.toLocaleDateString('en-GB');
-      },
-      renderTitle: ({ title, tags}) => {
-        const prefix = tags.includes("big project") ? "🔥" : "";
-        return `${prefix}${title}`
+      renderOptions: {
+        renderDate: (post) => {
+          // Custom date formatting
+          return new Date(post.createdAt).toLocaleDateString('en-GB');
+        },
+        renderTitle: (post) => {
+          const prefix = post.tags.includes("big project") ? "🔥" : "";
+          return `${prefix}${post.title}`
+        }
       }
     });
   });
@@ -62,17 +64,26 @@ And the content of the said page:
 
 ## API
 
-### `showGrid(options?: GridOptions)`
+### `showGrid<T>(options?: GridOptions<T>)`
 
 Renders a grid of WikiJS posts in the element with id `wikijs-post-grid`.
 
-#### GridOptions
+#### GridOptions<T>
 
 | Key | Type | Description | Default |
 |-----------|------|-------------|---------|
+| gridContainerId | string | ID of the HTML element to render the grid in | `'wikijs-post-grid'` |
 | maxPosts | number | Maximum number of posts to display | 16 |
-| renderDate | (date: Date) => string | Function to format dates | `date.toLocaleDateString()` |
-| renderTitle | (post: EnrichedPost<T>) => string | Function to customize the title rendering | `post => post.title` |
 | enrichPost | (post: WikiJsPost) => T | Function to enrich posts with additional properties before rendering | undefined (no enrichment) |
 | filterPost | (post: EnrichedPost<T>) => boolean | Function to filter which posts to display | undefined (no filtering) |
-| sortPost | (a: EnrichedPost<T>, b: EnrichedPost<T>) => number | Function to sort posts | unefined (no sorting) |
+| sortPost | (a: EnrichedPost<T>, b: EnrichedPost<T>) => number | Function to sort posts | undefined (no sorting) |
+| renderOptions | RenderOptions<T> | Options for customizing how posts are rendered | undefined |
+| fetchedPosts | WikiJsPost[] | Pre-fetched posts to avoid redundant GraphQL calls | [] |
+
+#### RenderOptions<T>
+
+| Key | Type | Description | Default |
+|-----------|------|-------------|---------|
+| renderDate | (post: EnrichedPost<T>) => string | Function to format dates | `post => new Date(post.createdAt).toLocaleDateString()` |
+| renderTitle | (post: EnrichedPost<T>) => string | Function to customize the title rendering | `post => post.title` |
+| renderTags | (tags: string[]) => string[] | Function to customize tag rendering | `tags => tags` |
