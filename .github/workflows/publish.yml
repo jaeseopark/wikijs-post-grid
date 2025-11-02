@@ -6,7 +6,7 @@ on:
 
 permissions:
   id-token: write # Required for OIDC
-  contents: read
+  contents: write # Required to upload to releases
 
 jobs:
   publish-npm:
@@ -44,11 +44,8 @@ jobs:
         fi
     
     - name: Upload browser build to release
-      uses: actions/upload-release-asset@v1
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./dist/wikijs-post-grid.min.js
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/wikijs-post-grid.min.js
-        asset_name: wikijs-post-grid.min.js
-        asset_content_type: application/javascript
