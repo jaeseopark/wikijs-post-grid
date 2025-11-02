@@ -30,7 +30,7 @@ export async function showGrid<T>(options: GridOptions<T>): Promise<void> {
             console.error('Error loading WikiJS posts:', error);
         }
     }
-    
+
     let processedPosts = posts
         .map(post => ({ ...post, ...enrichPost(post) }))
 
@@ -51,6 +51,7 @@ export async function showGrid<T>(options: GridOptions<T>): Promise<void> {
 // Export additional types and project grid preset for advanced usage
 export { WikiJsPost, EnrichedPost, GridOptions } from './types';
 export { showProjectGrid } from './curated/projects';
+export { fetchPosts } from './network';
 
 // Default export for UMD build
 export default { showGrid };

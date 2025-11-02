@@ -5,7 +5,7 @@ const GRAPHQL_PAYLOAD: GraphQLPayload = {
     operationName: null,
     variables: {},
     extensions: {},
-    query: "{\n  pages {\n    list {\n      id\n      locale\n      path\n      title\n      description\n      createdAt\n      tags\n      }\n      }\n}",
+    query: "{\n  pages {\n    list {\n      id\n      path\n      title\n      description\n      createdAt\n      tags\n      }\n      }\n}",
 };
 
 export async function fetchPosts(): Promise<WikiJsPost[]> {
