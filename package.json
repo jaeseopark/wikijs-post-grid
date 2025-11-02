@@ -1,6 +1,6 @@
 {
   "name": "wikijs-post-grid",
-  "version": "1.0.0-alpha.0",
+  "version": "0.0.1-dev",
   "description": "A JavaScript library for displaying WikiJS posts in a grid layout",
   "main": "dist/wikijs-post-grid.min.js",
   "types": "dist/index.d.ts",
