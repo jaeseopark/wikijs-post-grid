@@ -72,7 +72,7 @@ Renders a grid of WikiJS posts in the element with id `wikijs-post-grid`.
 
 | Key | Type | Description | Default |
 |-----------|------|-------------|---------|
-| gridContainerId | string | ID of the HTML element to render the grid in | `'wikijs-post-grid'` |
+| id | string | ID of the HTML element to render the grid in | `'wikijs-post-grid'` |
 | maxPosts | number | Maximum number of posts to display | 16 |
 | enrichPost | (post: WikiJsPost) => T | Function to enrich posts with additional properties before rendering | undefined (no enrichment) |
 | filterPost | (post: EnrichedPost<T>) => boolean | Function to filter which posts to display | undefined (no filtering) |
