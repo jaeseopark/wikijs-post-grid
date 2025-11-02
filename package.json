@@ -19,6 +19,7 @@
     "typescript"
   ],
   "author": "",
+  "repository": "https://github.com/jaeseopark/wikijs-post-grid",
   "license": "MIT",
   "devDependencies": {
     "prettier": "^3.0.0",
