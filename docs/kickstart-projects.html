@@ -7,38 +7,35 @@
             variables: {},
             extensions: {},
             query:
-                "{\n  pages {\n    list {\n      id\n      locale\n      path\n      title\n      description\n      createdAt\n      tags\n      }\n      }\n}",
+                "{\n  pages {\n    list {\n      id\n      path\n      title\n      description\n      createdAt\n      tags\n      }\n      }\n}",
         };
 
-        function isFinishedProject(page) {
-            var tags = page.tags || [];
-            return !tags.includes("wip") && (tags.includes("big project") || tags.includes("small project"));
+        function isProject(page) {
+            return page.tags.includes("project");
         }
 
-        function populateTime(page) {
-            const match = /end:(\d\d\d\d-\d\d-\d\d)/g.exec(page.description);
-            const time = new Date(match ? match[1] : page.createdAt);
-            return {
-                ...page,
-                time
-            };
+        function isFinished(page) {
+            return !page.tags.includes("wip");
         }
 
         function enrichPage(page) {
             const tags = page.tags || [];
             const imageUrl = extractImageUrl(page.description);
-            const filteredTags = tags.filter(tag => tag !== "big project" && tag !== "small project");
+            const timeMatch = /end:(\d\d\d\d-\d\d-\d\d)/g.exec(page.description);
+            const time = new Date(timeMatch ? timeMatch[1] : page.createdAt);
 
             return {
                 ...page,
+                tags,
                 isBigProject: tags.includes("big project"),
                 imageUrl: imageUrl,
-                filteredTags: filteredTags
+                time
             };
         }
 
-        function renderDate(date) {
-            return new Date(date).toLocaleDateString('en-US', {
+        // 'date' is of type Date
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric'
@@ -62,7 +59,6 @@
         function renderCard(page) {
             const isBig = page.isBigProject;
             const imageUrl = page.imageUrl;
-            const tags = page.filteredTags;
 
             // Create card container
             const card = document.createElement("div");
@@ -152,7 +148,7 @@
             // Create tags container
             const tagsContainer = document.createElement("div");
             tagsContainer.style.cssText = "display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;";
-            tags.forEach(tag => {
+            page.tags.forEach(tag => {
                 const tagLink = document.createElement("a");
                 tagLink.href = "/t/" + tag;
                 tagLink.style.cssText = "display: inline-block; padding: 4px 8px; font-size: 12px; color: #666; border: 1px solid #d1d5db; border-radius: 4px; background: #f9fafb; text-decoration: none; cursor: pointer; transition: background 0.2s;";
@@ -170,7 +166,7 @@
             // Create timestamp
             const timestamp = document.createElement("span");
             timestamp.style.cssText = "font-size: 12px; color: #999;";
-            timestamp.textContent = renderDate(page.time);
+            timestamp.textContent = formatDate(page.time);
             cardFooter.appendChild(timestamp);
 
             cardBody.appendChild(cardFooter);
@@ -197,10 +193,10 @@
             });
             var content = await rawResponse.json();
             var projects = content.data.pages.list
-                .filter(isFinishedProject)
-                .map(populateTime)
                 .map(enrichPage)
-                .sort((a, b) => new Date(b.time) - new Date(a.time))
+                .filter(isProject)
+                .filter(isFinished)
+                .sort((a, b) => b.time - a.time)
                 .slice(0, MAX_PROJECTS);
 
             showGrid(projects);
