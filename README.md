@@ -11,7 +11,7 @@ A TypeScript library for displaying WikiJS posts in a responsive grid layout, pe
 Put the snippet below in the Scripts section of your landing page.
 
 ```html
-<script src="path/to/wikijs-post-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wikijs-post-grid/dist/wikijs-post-grid.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     WikiJSPostGrid.showGrid();
@@ -28,7 +28,7 @@ And the content of the said page:
 ### Advanced Usage
 
 ```html
-<script src="path/to/wikijs-post-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wikijs-post-grid/dist/wikijs-post-grid.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     WikiJSPostGrid.showGrid({
