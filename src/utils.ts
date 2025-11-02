@@ -5,3 +5,11 @@ export function extractImageUrl(description: string): string | undefined {
   const match = description.match(imageRegex);
   return match ? match[1] : undefined;
 }
+
+export const combinePredicates = <T>(
+  ...predicates: Array<(item: T) => boolean>
+): ((item: T) => boolean) => {
+  return (item: T): boolean => {
+    return predicates.reduce((acc, predicate) => acc && predicate(item), true);
+  };
+}

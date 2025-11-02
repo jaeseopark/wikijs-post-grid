@@ -1,5 +1,6 @@
 import { WikiJsPost, EnrichedPost } from '../types';
 import { showGrid } from '../index';
+import { combinePredicates } from '../utils';
 
 type ProjectEnriched = {
   time: Date;
@@ -8,48 +9,39 @@ type ProjectEnriched = {
 };
 type ProjectPage = EnrichedPost<ProjectEnriched>;
 
-export function isFinishedProject({ tags }: ProjectPage): boolean {
-  return (
-    !tags.includes('wip') &&
-    (tags.includes('big project') || tags.includes('small project'))
-  );
-}
+const isDiy = ({ tags }: ProjectPage): boolean =>
+  tags.includes('diy');
 
-export function enrichProjectPage(post: WikiJsPost): ProjectPage {
+const isFinished = ({ tags }: ProjectPage): boolean =>
+  !tags.includes('wip');
+
+const enrichProjectPage = (post: WikiJsPost): ProjectPage => {
   // Extract time from description or use createdAt
-  const match = /end:(\d\d\d\d-\d\d-\d\d)/g.exec(page.description);
-  const time = new Date(match ? match[1] : page.createdAt);
+  const match = /end:(\d\d\d\d-\d\d-\d\d)/g.exec(post.description);
+  const time = new Date(match ? match[1] : post.createdAt);
 
-  const filteredTags = page.tags.filter(
-    (tag) => tag !== 'big project' && tag !== 'small project'
+  const filteredTags = post.tags.filter(
+    (tag: string) => tag !== 'big project' && tag !== 'small project'
   );
 
   return {
-    ...page,
+    ...post,
     time,
-    isBigProject: page.tags.includes('big project'),
-    filteredTags: filteredTags,
+    isBigProject: post.tags.includes('big project'),
+    filteredTags,
   };
-}
+};
 
-export function sortProjectsByAdjustedTime(
+const sortProjectsByAdjustedTime = (
   a: EnrichedPost<ProjectEnriched>,
   b: EnrichedPost<ProjectEnriched>
-): number {
-  return new Date(b.time).getTime() - new Date(a.time).getTime();
-}
+): number => b.time.getTime() - a.time.getTime();
 
-export interface ProjectGridOptions {
-  maxPosts?: number;
-  filterPost?: (post: WikiJsPost) => boolean;
-  sortPost?: (a: ProjectPage, b: ProjectPage) => number;
-  renderDate?: (date: Date) => string;
-}
-
-export async function showProjectGrid(): Promise<void> {
+export const showProjectGrid = async (): Promise<void> => {
+  const isFinishedProject = combinePredicates(isDiy, isFinished);
   return showGrid({
     enrichPost: enrichProjectPage,
     filterPost: isFinishedProject,
     sortPost: sortProjectsByAdjustedTime,
   });
-}
+};
