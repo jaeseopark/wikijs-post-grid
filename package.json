@@ -1,6 +1,6 @@
 {
   "name": "wikijs-post-grid",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "A JavaScript library for displaying WikiJS posts in a grid layout",
   "main": "dist/wikijs-post-grid.min.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,13 @@
     "format": "prettier --write src/**/*.ts",
     "format:check": "prettier --check src/**/*.ts"
   },
-  "keywords": ["wikijs", "posts", "grid", "javascript", "typescript"],
+  "keywords": [
+    "wikijs",
+    "posts",
+    "grid",
+    "javascript",
+    "typescript"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
