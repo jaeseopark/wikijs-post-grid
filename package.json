@@ -20,6 +20,7 @@
   ],
   "author": "",
   "repository": {
+    "type": "git",
     "url": "https://github.com/jaeseopark/wikijs-post-grid"
   },
   "license": "MIT",
