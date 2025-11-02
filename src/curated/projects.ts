@@ -9,8 +9,8 @@ type ProjectEnriched = {
 };
 type ProjectPage = EnrichedPost<ProjectEnriched>;
 
-const isDiy = ({ tags }: ProjectPage): boolean =>
-  tags.includes('diy');
+const isProject = ({ tags }: ProjectPage): boolean =>
+  tags.includes('project');
 
 const isFinished = ({ tags }: ProjectPage): boolean =>
   !tags.includes('wip');
@@ -38,7 +38,7 @@ const sortProjectsByAdjustedTime = (
 ): number => b.time.getTime() - a.time.getTime();
 
 export const showProjectGrid = async (): Promise<void> => {
-  const isFinishedProject = combinePredicates(isDiy, isFinished);
+  const isFinishedProject = combinePredicates(isProject, isFinished);
   return showGrid({
     enrichPost: enrichProjectPage,
     filterPost: isFinishedProject,
