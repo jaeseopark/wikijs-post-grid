@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiJS Post Grid Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WikiJS Post Grid Demo</h1>
+        
+        <!-- This is where the grid will be rendered -->
+        <div id="wikijs-post-grid"></div>
+    </div>
+
+    <!-- Include the library -->
+    <script src="./dist/wikijs-post-grid.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Basic usage with default options
+            WikiJSPostGrid.showGrid();
+
+            // Advanced usage with custom options (commented out for basic test)
+            /*
+            WikiJSPostGrid.showGrid({
+                maxPosts: 8,
+                enrichPost: (post) => {
+                    // Custom post enrichment
+                    return post;
+                },
+                filterPost: (post) => {
+                    // Custom filtering logic
+                    return post.tags && post.tags.length > 0;
+                },
+                sortPost: (a, b) => {
+                    // Sort by title alphabetically (A-Z)
+                    return a.title.localeCompare(b.title);
+                },
+                renderDate: (date) => {
+                    // Custom date formatting
+                    return date.toLocaleDateString('en-GB');
+                }
+            });
+            */
+        });
+    </script>
+</body>
+</html>
