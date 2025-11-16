@@ -31,12 +31,30 @@ const sortProjectsByAdjustedTime = (
   b: EnrichedPost<ProjectEnriched>
 ): number => b.time.getTime() - a.time.getTime();
 
+const renderTitle = (post: EnrichedPost<ProjectEnriched>): string => {
+  const prefix = post.isBigProject ? '🔥' : '';
+  return `${prefix}${post.title}`;
+}
+
+const renderDate = (post: EnrichedPost<ProjectEnriched>): string => {
+  return post.time.toISOString().split('T')[0];
+}
+
+const renderTags = (tags: string[]): string[] => {
+  return tags.filter(tag => tag !== 'project' && tag !== 'big project');
+};
+
 export const showProjectGrid = async (override: GridOptions<ProjectEnriched> = {}): Promise<void> => {
   const isFinishedProject = combinePredicates(isProject, isFinished);
   return showGrid({
     enrichPost: enrichProjectPage,
     filterPost: isFinishedProject,
     sortPost: sortProjectsByAdjustedTime,
+    renderOptions: {
+      renderTitle,
+      renderDate,
+      renderTags
+    },
     ...override,
   });
 };
