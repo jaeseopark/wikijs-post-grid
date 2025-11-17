@@ -17,7 +17,16 @@ const isFinished = ({ tags }: ProjectPage): boolean =>
 const enrichProjectPage = (post: WikiJsPost): ProjectPage => {
   // Extract time from description or use createdAt
   const match = /end:(\d\d\d\d-\d\d-\d\d)/g.exec(post.description);
-  const time = new Date(match ? match[1] : post.createdAt);
+  
+  let time: Date;
+  if (match) {
+    // Parse matched date as local timezone by splitting components
+    const [year, month, day] = match[1].split('-').map(Number);
+    time = new Date(year, month - 1, day); // month is 0-indexed
+  } else {
+    // Parse createdAt as UTC
+    time = new Date(post.createdAt);
+  }
 
   return {
     ...post,
