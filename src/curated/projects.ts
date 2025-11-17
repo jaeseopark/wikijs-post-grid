@@ -37,7 +37,7 @@ const renderTitle = (post: EnrichedPost<ProjectEnriched>): string => {
 }
 
 const renderDate = (post: EnrichedPost<ProjectEnriched>): string => {
-  return post.time.toISOString().split('T')[0];
+  return post.time.toLocaleDateString('sv-SE');
 }
 
 const renderTags = (tags: string[]): string[] => {
