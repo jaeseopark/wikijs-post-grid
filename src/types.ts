@@ -21,6 +21,7 @@ export interface RenderOptions<T> {
     renderDate?: (post: EnrichedPost<T>) => string; // will use the locale's default formatting if not provided
     renderTitle?: (post: EnrichedPost<T>) => string; // custom title rendering
     renderTags?: (tags: string[]) => string[]; // custom tag rendering
+    showThumbnail?: boolean; // show thumbnail image (default: true)
 }
 
 export interface GridOptions<T> {

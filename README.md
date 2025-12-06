@@ -87,3 +87,4 @@ Renders a grid of WikiJS posts in the element with id `wikijs-post-grid`.
 | renderDate | (post: EnrichedPost<T>) => string | Function to format dates | `post => new Date(post.createdAt).toLocaleDateString()` |
 | renderTitle | (post: EnrichedPost<T>) => string | Function to customize the title rendering | `post => post.title` |
 | renderTags | (tags: string[]) => string[] | Function to customize tag rendering | `tags => tags` |
+| showThumbnail | boolean | Whether to display post thumbnails | true |
