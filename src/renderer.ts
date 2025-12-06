@@ -19,7 +19,7 @@ export function renderCard<T>({ post, options = {} }: { post: EnrichedPost<T>, o
 
   if (imageUrl) {
     const figureLink = document.createElement("a");
-    figureLink.href = post.path;
+    figureLink.href = `/${post.path}`;
     figureLink.style.cssText = "display: block; width: 100%; height: 100%; text-decoration: none;";
 
     const img = document.createElement("img");
@@ -85,7 +85,7 @@ export function renderCard<T>({ post, options = {} }: { post: EnrichedPost<T>, o
 
   // Create title link
   const titleLink = document.createElement("a");
-  titleLink.href = post.path;
+  titleLink.href = `/${post.path}`;
   titleLink.style.cssText = "text-decoration: none; color: inherit; cursor: pointer;";
 
   const title = document.createElement("h2");
