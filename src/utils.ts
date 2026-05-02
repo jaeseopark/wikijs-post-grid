@@ -1,7 +1,7 @@
 export function extractImageUrl(description: string): string | undefined {
-  // Look for image URLs in the description (jpg, jpeg, or webp)
+  // Look for image URLs in the description (jpg, jpeg, webp, or avif)
   // Match text at start of string or after whitespace that ends with image extension
-  const imageRegex = /(?:^|\s)(\S+\.(jpg|jpeg|webp))/i;
+  const imageRegex = /(?:^|\s)(\S+\.(jpg|jpeg|webp|avif))/i;
   const match = description.match(imageRegex);
   return match ? match[1] : undefined;
 }
